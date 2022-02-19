@@ -67,7 +67,7 @@ li:hover {
 }
 
 #topImg {
-    background-image: url("assets/images/background");
+    background-image: url("assets/images/background.png");
     background-size: cover;
     background-position: center;
     height: 40vh;
