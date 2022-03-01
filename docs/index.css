@@ -17,9 +17,26 @@ nav {
     height: 6.5vh;
     width: 100vw;
     display: flex;
-    justify-content: left;
+    justify-content: space-between;
     transition: 0.3s;
     border-bottom: 1px solid gray;
+}
+
+#leftNav {
+    display: flex;
+}
+
+nav a {
+    cursor: pointer;
+    color: black;
+    text-decoration: none;
+    transition: 1s linear;
+}
+
+nav a:active,
+nav a:current {
+    font-weight: 200;
+    text-decoration: underline;
 }
 
 .shadow {
@@ -30,6 +47,8 @@ nav {
     margin: auto 0px;
     padding-left: 1em;
     font-size: 1vw;
+    border-right: 2px solid gray;
+    padding-right: 1em;
 }
 
 .initLet {
@@ -48,15 +67,15 @@ nav {
 
 ul {
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    display: flexbox;
-    flex-direction: inherit;
+    display: flex;
+    justify-content: left;
     list-style: none;
-    margin: auto 1em auto 0em;
+    margin: auto 0em auto 0em;
+    padding-left: none;
 }
 
 li {
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    display: inline-flex;
     margin-right: 1vw;
     font-size: 1vw;
 }
@@ -86,10 +105,14 @@ li:hover {
 #header h1 {
     font-family: inherit;
     font-weight: 300;
-    font-size: 4vh;
+    font-size: 3.7vh;
     color: white;
     padding: 0.3em 1em;
     position: relative;
+}
+
+#header h1 span {
+    font-weight: bolder;
 }
 
 #headerCredit {
@@ -116,6 +139,14 @@ li:hover {
     padding-bottom: 2rem;
 }
 
+#graphs h3 {
+    font-family: inherit;
+    font-weight: 200;
+    text-align: center;
+    color: #000000;
+    font-size: 6vh;
+}
+
 hr {
     width: 33%;
     margin: 0em auto 5em auto;
@@ -139,4 +170,32 @@ hr {
     position: absolute;
     color: #467aaa;
     z-index: 999;
+}
+
+#geoGraph {
+    width: 80vw;
+    height: 50vw;
+    border: 2px solid gray;
+    margin: 3em auto;
+}
+
+#supVis {
+    display: flex;
+    justify-content: space-around;
+    flex-flow: row wrap;
+    gap: 100px;
+}
+
+.barGraph {
+    width: 38vw;
+    height: 38vw;
+    margin: 2vw 2vw;
+    border: 2px solid gray;
+}
+
+.networkGraph {
+    width: 80vw;
+    height: 40vw;
+    margin: 2vw 2vw;
+    border: 2px solid gray;
 }

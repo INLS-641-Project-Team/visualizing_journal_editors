@@ -17,20 +17,28 @@
 
 <body>
     <nav id="nav">
-        <span id="title">
-        <h2>
-        <span class="initLet">V</span><span class="restWord">isualizing</span>
-        <span class="initLet">A</span class="initLet"><span class="restWord">cademic</span>
-        <span class="initLet">J</span><span class="restWord">ournal</span>
-        <span class="initLet">E</span><span class="restWord">ditors</span>
-        </h2>
-        </span>
+        <div id="leftNav">
+            <span id="title">
+            <h2>
+            <span class="initLet">V</span><span class="restWord">isualizing</span>
+            <span class="initLet">A</span class="initLet"><span class="restWord">cademic</span>
+            <span class="initLet">J</span><span class="restWord">ournal</span>
+            <span class="initLet">E</span><span class="restWord">ditors</span>
+            </h2>
+            </span>
+
+            <ul id="navLinks">
+                <li><a href="#about">About</a></li>
+                <li>Findings</li>
+                <li><a href="#graphs">Graphs</a></li>
+                <li>Acknowledgements</li>
+            </ul>
+        </div>
 
         <ul>
-            <li>About</li>
-            <li>Findings</li>
-            <li>Interactive Graphs</li>
-            <li>Acknowledgements</li>
+            <li>Animations: <button>On</button></li>
+            <li>Dark Mode: <button>On</button></li>
+
         </ul>
     </nav>
     <main>
@@ -38,7 +46,7 @@
         </section>
         <header id="header">
             <h1>
-                <b>Visualizing Academic Journal Editors:</b> Created by Kyle Ashburn, Madeline Miller, and Rolando Rodriguez
+                <span>Visualizing Academic Journal Editors:</span> Created by Kyle Ashburn, Madeline Miller, and Rolando Rodriguez
             </h1>
 
         </header>
@@ -60,6 +68,13 @@
                 Interactive Visualizations
             </h2>
             <hr>
+            <h3>Concentration Map</h3>
+            <svg id="geoGraph"></svg>
+            <h3>Supplementary Visualizations</h3>
+            <section id="'supVis">
+                <svg class="networkGraph"></svg>
+                <svg class="barGraph"></svg>
+                <svg class="barGraph"></svg> \ </section>
         </section>
     </main>
     <script src="index.js "></script>
