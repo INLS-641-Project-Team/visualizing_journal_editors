@@ -173,8 +173,8 @@ hr {
 }
 
 #geoGraph {
-    width: 80vw;
-    height: 50vw;
+    width: 100vw;
+    height: 45vw;
     border: 2px solid gray;
     margin: 3em auto;
 }
@@ -198,4 +198,15 @@ hr {
     height: 40vw;
     margin: 2vw 2vw;
     border: 2px solid gray;
+}
+
+.graticule {
+    stroke: gray;
+    fill: none;
+    stroke-width: 0.25px;
+}
+
+.country {
+    stroke: white;
+    stroke-width: 0.25px;
 }

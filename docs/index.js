@@ -2,7 +2,6 @@
 window.addEventListener("scroll", e => {
     let nav = document.getElementById("nav");
     let text = Array.from(document.getElementsByClassName("restWord"), x => x);
-    console.log(text);
     if (window.pageYOffset > 0) {
         nav.classList.add("shadow");
         text.forEach(x => {
@@ -77,20 +76,101 @@ class bannerVis {
             ex => ex
         )
 
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
 
 let bookVis = new bannerVis("introBanner", data);
 bookVis.render();
+
+class mapVis {
+
+    constructor(div_id) {
+        this.div_id = div_id;
+    }
+
+    async render() {
+
+        // load data
+        let map_data = await d3.json("world_geo.json", d => d)
+
+
+        // select container and create visualization
+        let svg = d3.select("#" + this.div_id)
+        let svg_height = svg._parents[0].clientHeight
+        let svg_width = svg._parents[0].clientWidth
+        let projection = d3.geoRobinson().scale(140).translate([svg_width / 2, svg_height / 3])
+        let path = d3.geoPath().projection(projection);
+
+        // prepare data
+        let data = await d3.csv("cleaned_csv2.csv", d => d);
+        let country_conc = {}
+        data.forEach(d => !(d.country in country_conc) ? country_conc[d.country] = 1 : country_conc[d.country] += 1)
+
+        let map_countries = []
+        map_data.features.forEach(d => {
+            map_countries.push(d.properties.geounit)
+        })
+        let data_countries = Array.from(Object.keys(country_conc));
+        data_countries.map(d => d.trim().toLowerCase())
+
+        console.log(data_countries)
+        console.log(map_countries)
+
+        map_data.features.forEach(d => {
+            if (data_countries.map(d => d.trim().toLowerCase()).includes(d.properties.geounit.trim().toLowerCase())) {
+                d.properties['editor_count'] = country_conc[d.properties.geounit.trim()]
+                console.log(`${d.properties.geounit} has ${d.properties['editor_count']} editors!`)
+            } else if (d.properties.geounit == 'United States of America') {
+                d.properties['editor_count'] = country_conc['United States']
+                console.log(`${d.properties.geounit} has ${d.properties['editor_count']} editors!`)
+            } else if (d.properties.geounit == 'Hong Kong S.A.R.') {
+                d.properties['editor_count'] = country_conc['Hong Kong']
+                console.log(`${d.properties.geounit} has ${d.properties['editor_count']} editors!`)
+            } else {
+                console.log(`----${d.properties.geounit} didn't work!`)
+            }
+        })
+
+        data_countries.forEach(d => {
+            if (!map_countries.includes(d)) {
+                console.log(d)
+            }
+        })
+
+        // create colorscale for map
+        let colorMap = d3.scaleLinear().domain([0, d3.max(Object.values(country_conc))]).range(["green", "#467aaa"]);
+
+        // draw countries
+        svg.append("g")
+            .attr("class", "country")
+            .selectAll("path")
+            .data(map_data.features)
+            .join("path")
+            .attr("fill", d => colorMap(d.properties.editor_count))
+            .attr("d", path)
+
+        // draw lat/long lines
+        svg.append("g")
+            .attr("class", "graticule")
+            .selectAll("path")
+            .data(d3.geoGraticule().lines())
+            .join("path")
+            .attr("d", path);
+
+        // draw border around globe
+        svg.append("g")
+            .selectAll("path")
+            .data([{ type: "Sphere" }])
+            .join("path")
+            .attr("class", "border")
+            .style("fill", "none")
+            .style("stroke", "gray")
+            .style("stroke-width", 3)
+            .attr("d", path);
+
+    }
+
+}
+
+let geoVis = new mapVis("geoGraph")
+geoVis.render()
