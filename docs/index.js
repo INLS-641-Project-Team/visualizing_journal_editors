@@ -106,8 +106,7 @@ class mapVis {
         map_data.features.forEach(d => {
             map_countries.push(d.properties.geounit)
         })
-        let data_countries = Array.from(Object.keys(country_conc));
-        data_countries.map(d => d.trim().toLowerCase())
+        console.log(country_conc)
 
         map_data.features.forEach(d => {
             if (country_conc[d.properties.geounit]) {
@@ -130,6 +129,8 @@ class mapVis {
                 d.properties['editor_count'] = country_conc["Macau"]
             } else if (d.properties.geounit == 'Republic of Serbia') {
                 d.properties['editor_count'] = country_conc["Serbia"]
+            } else if (d.properties.geounit == 'Democratic Republic of the Congo') {
+                d.properties['editor_count'] = country_conc["Congo"]
             } else {
                 d.properties['editor_count'] = 'Unknown'
             }
@@ -137,7 +138,7 @@ class mapVis {
 
 
         // create colorscale for map
-        let colorMap = d3.scaleLinear().domain([0, 123844]).range(["#f2f2f2", '#467aaa']);
+        let colorMap = d3.scaleLinear().domain([0, 123844]).range(["#f2f2f2", 'purple']);
 
         // draw countries
         svg.append("g")
@@ -148,10 +149,11 @@ class mapVis {
             .attr("id", d => `${d.properties.geounit}_drawing`)
             .attr("fill", d => colorMap(d.properties.editor_count ? d.properties.editor_count : 0))
             .attr("data-tippy-content", d => {
-                let html = `Country: ${d.properties.geounit} \n Editor Count: ${d.properties.editor_count}`
+                let count = d.properties.editor_count
+                let html = `<span><b>Country:</b> ${d.properties.geounit}</span><br><span><b>Editor Count:</b> ${Number.isFinite(count) == false? count : count.toLocaleString()}</span>`
                 return html
             })
-            .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: true }))
+            .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 }))
             .attr("d", path)
 
         // draw lat/long lines
@@ -170,7 +172,7 @@ class mapVis {
             .attr("class", "border")
             .style("fill", "none")
             .style("stroke", "gray")
-            .style("stroke-width", 3)
+            .style("stroke-width", 2)
             .attr("d", path);
 
     }
