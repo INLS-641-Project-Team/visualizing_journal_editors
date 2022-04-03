@@ -173,8 +173,8 @@ hr {
 }
 
 #geoGraph {
-    width: 100vw;
-    height: 45vw;
+    width: 750px;
+    height: 500px;
     border: 2px solid gray;
     margin: 3em auto;
 }

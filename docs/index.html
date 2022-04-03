@@ -65,6 +65,7 @@
             <h3>Concentration Map</h3>
             <form>
                 <select id="projection-select" onchange="geoVis.updateProj(this)">
+                    <option value="d3.geoRobinson">Default: Robinson</option>
                 </select>
             </form>
             <svg id="geoGraph"></svg>

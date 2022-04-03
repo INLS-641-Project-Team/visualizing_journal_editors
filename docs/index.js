@@ -209,20 +209,28 @@ class mapVis {
         geoVis.render(result.value)
     }
 
-    async render(projection) {
+    fitDimensions(projection, bounds, width) {
+        return false
+    }
+
+    async render(proj) {
 
         // select container and create visualization
+        // scaling inspired by https://observablehq.com/@d3/projection-comparison
         let svg = d3.select("#" + this.div_id)
-        let svg_height = svg._parents[0].clientHeight
-        let svg_width = svg._parents[0].clientWidth
-        let project = projection().scale(130).translate([svg_width / 2, svg_height / 2])
-        let path = d3.geoPath().projection(project);
+        let height = 500;
+        let width = 750;
+        let projection = proj().translate([width / 2, height / 2]);
+        projection.scale(projection.scale() * (300) / 400)
+        let path = d3.geoPath().projection(projection);
 
         // load and prepare data
         let map_data = await d3.json("world_geo.json", d => d);
         let ed_data = await d3.csv("cleaned_csv2.csv", d => d);
         let country_conc = {}
         ed_data.forEach(d => !(d.country in country_conc) ? country_conc[d.country] = 1 : country_conc[d.country] += 1)
+
+        //projection.fitSize([710, 460], map_data)
 
         let map_countries = []
         map_data.features.forEach(d => {
@@ -309,7 +317,7 @@ class mapVis {
                 .attr("class", "border")
                 .style("fill", "none")
                 .style("stroke", "gray")
-                .style("stroke-width", 2)
+                .style("stroke-width", 1.5)
                 .attr("d", path),
                 update => update
                 .attr('d', path),
