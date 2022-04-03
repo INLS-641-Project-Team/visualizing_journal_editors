@@ -63,6 +63,10 @@
             </h2>
             <hr>
             <h3>Concentration Map</h3>
+            <form>
+                <select id="projection-select" onchange="geoVis.updateProj(this)">
+                </select>
+            </form>
             <svg id="geoGraph"></svg>
 
         </section>
