@@ -86,7 +86,7 @@ li:hover {
 }
 
 #topImg {
-    background-image: url("./assets/images/background.png");
+    background-image: url("../images/background.png");
     background-size: cover;
     background-position: center;
     height: 40vh;
@@ -172,25 +172,27 @@ hr {
     z-index: 999;
 }
 
-#geoGraph {
-    width: 750px;
-    height: 500px;
-    border: 2px solid gray;
-    margin: 3em auto;
+#graphs {
+    display: flex;
+    align-content: space-around;
 }
 
-#supVis {
-    display: flex;
-    justify-content: space-around;
-    flex-flow: row wrap;
-    gap: 100px;
+#geoGraph {
+    width: 800px;
+    height: 600px;
+    border: 1px solid gray;
+}
+
+#barGraphs {
+    max-width: 620px;
 }
 
 .barGraph {
-    width: 38vw;
-    height: 38vw;
-    margin: 2vw 2vw;
-    border: 2px solid gray;
+    width: 620px;
+    max-width: 620px;
+    height: 298px;
+    display: block;
+    border: 1px solid gray;
 }
 
 .networkGraph {

@@ -1,0 +1,27 @@
+{
+    "name": "visualizing_journal_editors",
+    "version": "1.0.0",
+    "description": "INLS 641 Semester Project",
+    "main": "index.js",
+    "directories": {
+        "doc": "docs"
+    },
+    "scripts": {
+        "test": "print('hello')"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/INLS-641-Project-Team/visualizing_journal_editors.git"
+    },
+    "author": "Rolando Rodriguez & Kyle Ashburn",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/INLS-641-Project-Team/visualizing_journal_editors/issues"
+    },
+    "homepage": "https://github.com/INLS-641-Project-Team/visualizing_journal_editors#readme",
+    "dependencies": {
+        "express": "^4.17.3",
+        "node": "^17.7.2",
+        "require": "^0.4.4"
+    }
+}

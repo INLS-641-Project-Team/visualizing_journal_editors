@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -6,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visualizing Academic Journal Editors</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="assets/css/index.css">
 </head>
 
 <body>
@@ -40,7 +41,7 @@
         </section>
         <header id="header">
             <h1>
-                <span>Visualizing Academic Journal Editors:</span> Created by Kyle Ashburn, Madeline Miller, and Rolando Rodriguez
+                <span>Visualizing Academic Journal Editors:</span> Created by Kyle Ashburn and Rolando Rodriguez
             </h1>
 
         </header>
@@ -57,18 +58,25 @@
                 quam.
             </p>
         </section>
-        <section id="graphs">
-            <h2>
-                Interactive Visualizations
-            </h2>
-            <hr>
+        <h2>
+            Interactive Visualizations
+        </h2>
+        <hr>
+        <section id="map">
             <h3>Concentration Map</h3>
             <form>
                 <select id="projection-select" onchange="geoVis.updateProj(this)">
                     <option value="d3.geoRobinson">Default: Robinson</option>
                 </select>
             </form>
+        </section>
+        <section id="graphs">
             <svg id="geoGraph"></svg>
+            <div id="barGraphs">
+                <svg id="bar_1" class="barGraph"></svg>
+                <svg id="bar_2" class="barGraph"></svg>
+            </div>
+        </section>
 
         </section>
     </main>
@@ -82,7 +90,8 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
-    <script src="index.js "></script>
+    <script src="assets/js/require.js"></script>
+    <script src="assets/js/page.js "></script>
 </body>
 
 </html>

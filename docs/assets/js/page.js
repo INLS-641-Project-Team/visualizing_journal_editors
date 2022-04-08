@@ -164,7 +164,7 @@ class bannerVis {
             .attr("x", d => d * 9 + "%")
             .attr("y", d => d % 2 == 0 ? 75 + "%" : 25 + "%")
             .attr("opacity", 0)
-            .transition().duration(700).delay(d => d * 700)
+            // .transition().duration(700).delay(d => d * 700)
             .attr("width", 2 + "em")
             .attr("height", 2 + "em")
             .attr("opacity", 1),
@@ -193,9 +193,9 @@ class bannerVis {
 }
 
 let bookVis = new bannerVis("introBanner");
-bookVis.render();
+//bookVis.render();
 
-class mapVis {
+class visGraphs {
 
     constructor(div_id) {
         this.div_id = div_id;
@@ -209,28 +209,204 @@ class mapVis {
         geoVis.render(result.value)
     }
 
-    fitDimensions(projection, bounds, width) {
-        return false
-    }
+    // dynamically renders the main map visualization 
+    // recieves projection from select options
+    // fData = filtered data 
+    createMap(fData, proj) {
 
-    async render(proj) {
+        // INITIALIZING VARIABLES
+        const svg = d3.select("#geoGraph")
+        const width = 800; // dimension of SVG
+        const height = 600; // dimension of SVG
+        const xMargin = 40; // x-axis margin
+        const yMargin = 20; // y-axis margin
 
-        // select container and create visualization
+        // CREATING PROJECTION
         // scaling inspired by https://observablehq.com/@d3/projection-comparison
-        let svg = d3.select("#" + this.div_id)
-        let height = 500;
-        let width = 750;
         let projection = proj().translate([width / 2, height / 2]);
         projection.scale(projection.scale() * (300) / 400)
         let path = d3.geoPath().projection(projection);
 
-        // load and prepare data
-        let map_data = await d3.json("world_geo.json", d => d);
-        let ed_data = await d3.csv("cleaned_csv2.csv", d => d);
-        let country_conc = {}
-        ed_data.forEach(d => !(d.country in country_conc) ? country_conc[d.country] = 1 : country_conc[d.country] += 1)
+        // create map colorscale ; 123884 is the high num of editors per country
+        // ** NEEDS UPDATING ** UPDATE DOMAIN TO BE DYNAMIC -- UPDATE COLOR PALETTE
+        const colorMap = d3.scaleLinear().domain([0, 123844]).range(["#f2f2f2", 'purple']);
 
-        //projection.fitSize([710, 460], map_data)
+        // DRAW COUNTRIES
+        svg.append("g")
+            .selectAll("path")
+            .data(fData.features)
+            .join(
+                enter => enter
+                .append("path")
+                .attr("class", "country")
+                .attr("id", d => `${d.properties.geounit}_drawing`)
+                .attr('clip-path', 'url(#clippath)')
+                .attr("fill", d => colorMap(d.properties.editor_count ? d.properties.editor_count : 0))
+                .attr("data-tippy-content", d => {
+                    let count = d.properties.editor_count
+                    let html = `<span><b>Country:</b> ${d.properties.geounit}</span><br><span><b>Editor Count:</b> ${Number.isFinite(count) == false? count : count.toLocaleString()}</span>`
+                    return html
+                })
+                .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 }))
+                .attr("d", path),
+                update => update
+                .attr('d', path),
+                exit => exit
+                .remove());
+
+        // DRAW LONG/LAT LINES
+        svg.append("g")
+            .attr("class", "graticule")
+            .selectAll("path")
+            .data(d3.geoGraticule().lines())
+            .join(
+                enter => enter
+                .append("path")
+                .attr("d", path)
+                .attr('clip-path', 'url(#clippath)'),
+                update => update
+                .attr('d', path),
+                exit => exit
+                .remove());
+
+        // DRAW MAP BORDER
+        svg.append("g")
+            .selectAll("path")
+            .data([{ type: "Sphere" }])
+            .join(
+                enter => enter
+                .append('path')
+                .attr("class", "border")
+                .style("fill", "none")
+                .style("stroke", "gray")
+                .style("stroke-width", 1.5)
+                .attr("d", path),
+                update => update
+                .attr('d', path),
+                exit => exit
+                .remove());
+
+        // DRAW CLIPPATH
+        // Necessary for some of the projections
+        svg.append('g')
+            .selectAll('clipPath')
+            .data([{ type: 'Sphere' }])
+            .join(
+                enter => enter
+                .append('clipPath')
+                .attr('id', 'clippath')
+                .append('path')
+                .attr('d', path),
+                update => update
+                .attr('d', path),
+                exit => exit
+            );
+
+
+
+        return true
+    }
+
+    // Dynamically renders the two bar graphs
+    createBarGraphs(fData1, fData2, filter1 = false, filter2 = false) {
+
+        //  PREPARE DATA
+        let topData1 = Object.entries(fData1).sort(([, a], [, b]) => b['editors'] - a['editors']).slice(0, 10).map(d => [d[0], d[1]['editors']]);
+        let topData2 = Object.entries(fData2).sort(([, a], [, b]) => b - a).slice(0, 10).map(d => [d[0], d[1]]);
+        console.log(topData2);
+
+        // INITIALIZING VARIABLES
+        const bg1 = d3.select('#bar_1');
+        const bg2 = d3.select('#bar_2');
+        const width = 620
+        const height = 298
+        const xMargin = 30;
+        const yMargin = 20;
+        const scaleY1 = d3.scaleLinear().domain([0, 150000]).range([height - 3 * yMargin, 0])
+        const scaleX1 = d3.scaleBand().domain(topData1.map(d => d[0] == 'United States' ? 'U.S.A' : d[0] == 'United Kingdom' ? 'U.K.' : d[0])).range([0, width - 4 * xMargin]).padding(0.2)
+        const scaleY2 = d3.scaleLinear().domain([0, 400]).range([height - 3 * yMargin, 0])
+        const scaleX2 = d3.scaleBand().domain(topData2.map(d => d[0])).range([0, width - 4 * xMargin]).padding(0.2)
+        const durationScale = d3.scaleLinear().domain([200, 140000]).range([500, 1000])
+
+        // CREATE TITLES
+        bg1.append('text').attr('x', width / 3).attr('y', 0.5 * yMargin).attr('dy', '1em').text(`Top 10 Countries With Most Editors`);
+        bg2.append('text').attr('x', width / 4).attr('y', 0.5 * yMargin).attr('dy', '1em').text(`Top 10 Editors by Number of Editorial Positions`);
+
+        // CREATE CHARTS
+        const chart1 = bg1.append('g').attr("transform", `translate(${xMargin}, ${yMargin})`);
+        const chart2 = bg2.append('g').attr("transform", `translate(${xMargin}, ${yMargin})`);
+
+        // CREATE Y-AXIS 
+        chart1.append('g').attr('transform', `translate(${xMargin}, ${yMargin})`).call(d3.axisLeft(scaleY1).ticks(5));
+        chart2.append('g').attr('transform', `translate(${xMargin}, ${yMargin})`).call(d3.axisLeft(scaleY2).ticks(5));
+
+        // CREATE x-AXIS
+        chart1.append('g').attr('transform', `translate(${xMargin}, ${298 - 2 * yMargin})`).call(d3.axisBottom(scaleX1).ticks(10))
+        chart2.append('g').attr('transform', `translate(${xMargin}, ${298 - 2 * yMargin})`).call(d3.axisBottom(scaleX2).ticks(10))
+
+
+        // CREATE BARS FOR CHART 1
+        chart1.append('g').selectAll('rect').data(topData1, d => d)
+            .join(
+                enter => enter
+                .append('rect')
+                .attr('x', d => scaleX1(d[0] == 'United States' ? 'U.S.A' : d[0] == 'United Kingdom' ? 'U.K.' : d[0]) + 30)
+                .attr('y', height - 2 * yMargin)
+                .attr('width', scaleX1.bandwidth())
+                .attr('height', 0)
+                .attr('fill', 'red')
+                .transition()
+                .duration(d => durationScale(d[1]))
+                .delay((d, i) => 800 - durationScale(d[1]))
+                .attr('height', d => height - scaleY1(d[1]) - 3 * yMargin)
+                .attr('y', d => scaleY1(d[1]) + yMargin),
+                update => update,
+                exit => exit
+            )
+
+        // CREATE BARS FOR CHART 2
+        chart2.append('g').selectAll('rect').data(topData2, d => d)
+            .join(
+                enter => enter
+                .append('rect')
+                .attr('x', d => scaleX2(d[0]) + 30)
+                .attr('y', height - 2 * yMargin)
+                .attr('width', scaleX2.bandwidth())
+                .attr('height', 0)
+                .attr('fill', 'red')
+                .transition()
+                .duration(d => durationScale(d[1]))
+                .delay((d, i) => 800 - durationScale(d[1]))
+                .attr('height', d => height - scaleY2(d[1]) - 3 * yMargin)
+                .attr('y', d => scaleY2(d[1]) + yMargin),
+                update => update,
+                exit => exit
+            )
+
+        return true
+    }
+
+
+
+
+    async initialRender(proj) {
+
+
+        // load and prepare data
+        let map_data = await d3.json("assets/data/world_geo.json", d => d);
+        let ed_data = await d3.csv("assets/data/cleaned_csv2.csv", d => d);
+        let country_conc = {}
+        let editor_conc = {}
+        ed_data.forEach(d => !(d.country in country_conc) ? country_conc[d.country] = { 'editors': 1 } : country_conc[d.country]['editors'] += 1)
+        ed_data.forEach(d => !(d.editor in editor_conc) ? editor_conc[d.editor] = 1 : editor_conc[d.editor] += 1)
+        ed_data.forEach(function(x) {
+            !country_conc[x.country]['journals'] ? country_conc[x.country]['journals'] = [x.journal] :
+                !(x.journal in country_conc[x.country]['journals']) ? country_conc[x.country]['journals'].push(x.journal) :
+                false
+        })
+
+        console.log(Object.entries(editor_conc).length)
+
 
         let map_countries = []
         map_data.features.forEach(d => {
@@ -265,84 +441,12 @@ class mapVis {
             }
         })
 
-
-        // create colorscale for map
-        let colorMap = d3.scaleLinear().domain([0, 123844]).range(["#f2f2f2", 'purple']);
-
-        // draw countries
-        svg.append("g")
-            .selectAll("path")
-            .data(map_data.features)
-            .join(
-                enter => enter
-                .append("path")
-                .attr("class", "country")
-                .attr("id", d => `${d.properties.geounit}_drawing`)
-                .attr('clip-path', 'url(#clippath)')
-                .attr("fill", d => colorMap(d.properties.editor_count ? d.properties.editor_count : 0))
-                .attr("data-tippy-content", d => {
-                    let count = d.properties.editor_count
-                    let html = `<span><b>Country:</b> ${d.properties.geounit}</span><br><span><b>Editor Count:</b> ${Number.isFinite(count) == false? count : count.toLocaleString()}</span>`
-                    return html
-                })
-                .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 }))
-                .attr("d", path),
-                update => update
-                .attr('d', path),
-                exit => exit
-                .remove());
-
-        // draw lat/long lines
-        svg.append("g")
-            .attr("class", "graticule")
-            .selectAll("path")
-            .data(d3.geoGraticule().lines())
-            .join(
-                enter => enter
-                .append("path")
-                .attr("d", path)
-                .attr('clip-path', 'url(#clippath)'),
-                update => update
-                .attr('d', path),
-                exit => exit
-                .remove());
-
-        // draw border around globe
-        svg.append("g")
-            .selectAll("path")
-            .data([{ type: "Sphere" }])
-            .join(
-                enter => enter
-                .append('path')
-                .attr("class", "border")
-                .style("fill", "none")
-                .style("stroke", "gray")
-                .style("stroke-width", 1.5)
-                .attr("d", path),
-                update => update
-                .attr('d', path),
-                exit => exit
-                .remove());
-
-
-        // draw clipPath
-        svg.append('g')
-            .selectAll('clipPath')
-            .data([{ type: 'Sphere' }])
-            .join(
-                enter => enter
-                .append('clipPath')
-                .attr('id', 'clippath')
-                .append('path')
-                .attr('d', path),
-                update => update
-                .attr('d', path),
-                exit => exit
-            )
+        //this.createMap(map_data, proj);
+        this.createBarGraphs(country_conc, editor_conc);
 
     }
 
 }
 
-let geoVis = new mapVis("geoGraph")
-geoVis.render(d3.geoRobinson)
+let geoVis = new visGraphs("geoGraph")
+geoVis.initialRender(proj = d3.geoRobinson)
