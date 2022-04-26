@@ -12,6 +12,7 @@ class handler {
         })
 
         d3.json("assets/data/concentrations.json").then(r => {
+            console.log('sending concentrations to maps.')
             mapVis.setCounts(r);
             barVisL.create_attrs(r, 'countries', 'ed_count').render();
             barVisR.create_attrs(r, 'editors', 'journal_count').render();
