@@ -113,6 +113,7 @@ class mapGraph {
 
 
     async setCounts(data, filter = 'countries', subfilter = 'ed_count') {
+        console.log('concentrations loaded')
         this.concentrations = data;
         let filtered_conc = data[filter]
         let countries_info = Object.values(filtered_conc)
