@@ -5,7 +5,6 @@
 
 body {
     background-color: #FFFFFF;
-    text-align: center;
 }
 
 nav {
@@ -129,7 +128,7 @@ li:hover {
 }
 
 #about h2,
-#graphs h2 {
+h2#visHeader {
     font-family: inherit;
     font-weight: 300;
     text-align: center;
@@ -137,14 +136,6 @@ li:hover {
     font-size: 8vh;
     padding-top: 2rem;
     padding-bottom: 2rem;
-}
-
-#graphs h3 {
-    font-family: inherit;
-    font-weight: 200;
-    text-align: center;
-    color: #000000;
-    font-size: 6vh;
 }
 
 hr {
@@ -157,6 +148,7 @@ hr {
     text-align: left;
     padding-left: 1em;
     margin: 1em 5em;
+    font-size: 2em;
 }
 
 #introBanner {
@@ -174,32 +166,62 @@ hr {
 
 #graphs {
     display: flex;
-    align-content: space-around;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+section#mapVis,
+section#networkVis,
+section#bar1-box,
+section#bar2-box {
+    text-align: center;
+    display: block;
+    border: 1px solid grey;
+    border-radius: 3px;
+    margin-bottom: 0.8vw;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07), 0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.07), 0 16px 16px rgba(0, 0, 0, 0.07);
 }
 
 #geoGraph {
-    width: 800px;
-    height: 600px;
-    border: 1px solid gray;
+    width: 49vw;
+    height: 450px;
+    margin: 0px auto;
+    overflow: none;
+    /* border: 1px solid gray; */
 }
 
-#barGraphs {
-    max-width: 620px;
+#networkGraph {
+    width: 49vw;
+    height: 450px;
+    /* border: 1px solid gray; */
+}
+
+.map_title {
+    font-family: inherit;
+    font-weight: 400;
+    color: #000000;
+    font-size: 3vh;
+    margin: 1em;
+}
+
+#map_filters select {
+    height: 2em;
+    padding: 0em 0.2em;
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 .barGraph {
-    width: 620px;
-    max-width: 620px;
+    width: 49vw;
     height: 298px;
-    display: block;
-    border: 1px solid gray;
+    overflow: none;
 }
 
-.networkGraph {
-    width: 80vw;
-    height: 40vw;
-    margin: 2vw 2vw;
-    border: 2px solid gray;
+.filterBox {
+    height: 200px;
+    width: 100px;
+    border: 1px solid gray;
+    background: rgba(60, 64, 67, 0.05);
+    z-index: 999;
 }
 
 .graticule {
@@ -211,4 +233,39 @@ hr {
 .country {
     stroke: black;
     stroke-width: 0.25px;
+}
+
+.bar-select {
+    font-size: 0.9em;
+    width: 15vw;
+    padding: 0.1em;
+}
+
+.links line {
+    stroke: rgb(78, 78, 78);
+}
+
+.nodes circle {
+    pointer-events: all;
+}
+
+.countryClicked {
+    stroke: red;
+    stroke-width: 1.25px;
+    fill: red !important;
+}
+
+.countryNotClicked {
+    stroke: rgb(33, 33, 33);
+    fill: rgb(120, 120, 120) !important;
+}
+
+*:checked,
+*:focus {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
