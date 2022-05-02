@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Report</title>
+    <style>
+        body {
+            border: 1px solid grey;
+            padding: 1em;
+            width: 60vw;
+            font-size: 1.3em;
+            margin: 5em auto;
+        }
+        
+        h1 {
+            color: #467aaa;
+            margin: 10px auto;
+            font-size: 4em;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 2em;
+            color: #467aaa;
+            width: fit-content
+        }
+        
+        h3 {
+            font-size: 1.5em;
+        }
+        
+        p:not(.authors) {
+            padding-left: 1em;
+            line-height: 2;
+            font-size: 1.2em;
+        }
+        
+        li {
+            font-size: 1.3em;
+            color: grey;
+            font-style: italic;
+            list-style: none;
+            font-weight: 600;
+            width: fit-content;
+            border-left: 10px solid grey;
+            padding: 10px;
+        }
+        
+        figure,
+        img {
+            width: 30vw;
+            margin: 0px auto;
+            text-align: center;
+        }
+        
+        a {
+            padding-left: 2em;
+            line-height: 2;
+            font-size: 1.2em;
+            color: maroon;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 30px;
+            left: 5vw;
+            border: 1px solid maroon;
+            padding: 10px;
+        }
+        
+        .nav:hover {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <p>
+        <a href="../../index.html" class="nav">Project page</a>
+    </p>
+    <h1>Final Report</h1>
+    <hr>
+    <p style="text-decoration:italicize; color:grey; text-align:center; font-size: 2em; margin: 10px;" class="authors"> Kyle Ashburn & Rolando Rodriguez</p>
+    <hr>
+    <h2>>> Goals, Target Users, Questions
+        <<</h2>
+
+            <h3>Motivation </h3>
+            <p>
+                We started our project aware of the opacity prevalent in publishing. We often struggle to understand the connections between editors, journals, and institutions. This confusion may complicate our ability to see below the waterline of publishing so we
+                only see the tip of the iceberg that we deal with the most. This is important because it highlights issues of equity within publishing. If we are unaware of the “shape” of the world of publishing, then we are unlikely to be able to recognize
+                what inequities exist let alone address them. This is leaving aside issues of a lack of familiarity of publishing and how this can be compounded by inequity. Throughout all of this, the thread connecting it is this lack of clarity. Our
+                goal here was to help tease out the representation of institutions and individuals within publishing.
+
+            </p>
+            <h3>Target Users</h3>
+            <p>When it came to the user's personas, we decided to go with a broader definition. Ultimately, we’re focused on anyone who is involved with publishing: researchers, librarians, editors. We also felt we had a secondary audience of anyone who
+                depends on publishing. We felt this was important to make sure we were providing enough individuals with an opportunity to gain a better understanding of publishing.
+            </p>
+            <h3>Questions</h3>
+            <p>
+                Our questions reflected our desire to illuminate the world of publishing. Thus, they revolve around questions of involvement and equity within publishing.
+                <ul>
+                    <li>How do countries compare in terms of involvement in editing?</li>
+                    <p>This matters because it gets at issues of equity within publishing. We need to understand on a basic level what the levels of involvement are on a country level before we can think on a more granular level.</p>
+                    <li>Who are the most active editors?</li>
+                    <p>This also gets at issues of equity in publishing but on a more granular level. By thinking about who is involved in publishing, we can begin to see if there are individuals holding undue influence. This allows us to see some of the
+                        structural problems there are in academia.</p>
+                    <li>What institutions carry too much power within publishing?</li>
+                    <p>Continuing along our pattern of equity, here we want to tease out the institutions that hold too much power in publishing. We already suspect that given the nature of academia there are going to be a few institutions that dominate.
+                        This matters because the names and natures of those institutions carry serious implications about equity. </p>
+                    <li>What relationships can be found between editors, nations, and institutions?</li>
+                    <p>Finally, we wanted to tease out the relationships between editors, nations, and institutions. In doing so, we could not only shine a light on the issues of equity but also begin to highlight the structures that support inequity. In
+                        doing so, we hope that we could begin to address these issues and make publishing a more equitable experience. </p>
+                </ul>
+            </p>
+            <h2>>> Input Data
+                <<</h2>
+                    <p>All of the original data from Open Editors before they added the new 2022 results. The original dataset, without predatory journals included, had over 500,000 entries. Upon removing the most problematic entries (multiple NULL values,
+                        undecipherable names and affiliations), the dataset had just over 445,000 entries. Each of these entries had attributes: editor name, publisher title, journal title, type of position, affiliation, country, ROR ID, and URL. We removed
+                        unnecessary information for our analysis, such as ROR ID and URL, and rearranged the attributes for logical clarity for our purposes.
+                    </p>
+                    <p>The predatory journal dataset added approximately an additional 150,000 entries with the same attributes as the original dataset. Upon the inclusion of this dataset, we had to create an additional attribute to indicate whether this
+                        journal editor’s position was on a predatory journal using a 0 or 1 for non-predatory or predatory. </p>
+                    <p>Since loading the entire datasets onto the website caused a noticeable delay in the rendering of the charts, we decided to create derivative datasets to help speed up this process. The first derivative dataset contained aggregate statistics
+                        of the number of journals and editors grouped by country or subcountry. Further these statistics include the percentage of predatory journals out of total journals represented in a country and the percentage of unique editors who
+                        serve on a predatory journal out of the total number of editors. </p>
+                    <p>Lastly, we had to create a derivative dataset of the nodes represented in our data (countries/journals/publishers) and the edgelists between those nodes. These edges could be represented by the amount of shared journals. shared countries
+                        represented, or shared journals. These amounts would indicate the weights of these particular edges. This data was read as a JSON file. </p>
+
+                    <h2>>> Intended Visualization Designs
+                        <<</h2>
+                            <p>From our initial planning stages, we knew that an interactive choropleth map would be the best way to represent the distribution and concentration of journals and editors across countries or sub-countries through different
+                                gradations of color. An interactive map would then be our main visualization. However, a map alone could not capture statistics such as top ten “productive” editors (individuals with the most editorial positions) or the
+                                ten ten journals by number of editors. Therefore, we decided that bar graphs would provide a simple but effective manner to represent this additional data. This would allow the users to look at different scopes of information
+                                at once. Since there are many actors that users might want to look at (editors vs. journals), we decided that having two accompanying bar graphs would be most effective. </p>
+                            <p>Further, besides filters to allow users to determine what statistic they wanted to use to measure concentrations or top measures, we would have the bar graphs’ scope linked to the map. If the user is interested in one or several
+                                countries, they can click on those countries and the scope of those bar graphs would be limited to that selection.</p>
+                            <p>One of the questions that we wanted to answer was the relationships between actors, such as countries, publishers, and institutions, so we agreed a network would help us represent those relationships best. </p>
+                            <p>Our initial digital sketch of the graphs and their layout is represented by Figure 1 below. This layout maintained the primacy of the map, followed by the network graph, then showed the two bar graphs next to each other. The
+                                differing axes of the bar graphs would help differentiate the actors that they were representing. </p>
+                            <figure><img src="../images/first-draft.png" alt="Image of a visualization sketch consisting of map graph, network graph, and two bar graphs from top to bottom.">
+                                <figcaption>Figure 1: Initial Sketch of the Visualization Layout</figcaption>
+                            </figure>
+                            <p>However, as we lost one team member and continued to clean the data, we became aware that perhaps our goals for these visualizations were too lofty. We then decided to cut out the network graph, as the relationships between
+                                actors could be seen as having secondary importance to the distribution of the journals and editors across countries and institutions. </p>
+                            <figure><img src="../images/second-draft.png" alt="Image of a visualization sketch consisting of a map graph to the left and two stacked bar graphs to the right.">
+                                <figcaption>Figure 2: Second Iteration of the Design</figcaption>
+                            </figure>
+                            <p>Ultimately, we decided that the relationship between countries was important enough, and we had the time to implement this graph, so we included the network graph as well. A network graph would not just show the dispersal of
+                                power in individual institutions and countries but show the networks of power that institutions have with one another. </p>
+                            <h2>>> Data Transformations & Statistical Analyses Required
+                                << </h2>
+                                    <h3>Cleaning the Affiliation Column</h3>
+                                    <p>This was one of our most challenging problems we faced. Dealing with issues of semantic normalization. There are so many different ways to describe one’s affiliation with an institution. This ranges from variation in
+                                        describing the institution itself (UNC-CH vs UNC Chapel Hill vs University of North Carolina at Chapel Hill for instance) but it also included extra levels of granularity such as the department, the title of the
+                                        individual, and the address of their office. We used NER from SPacy to identify institutions but it sometimes incorrectly identified organizations.</p>
+                                    <h3>Resolving Unicode Issues</h3>
+                                    <p>Another of our biggest challenges we ran into was the prevalence of unicode within the scraped data. We had to balance removing all of the unicode with whether the effort involved in having a conversion for every unicode
+                                        character misencoding was worth it. In the end, we decided to focus only on those unicode issues that were the most common within the dataset which represented about 95% of the unicode characters in the dataset.
+                                    </p>
+                                    <p><a href="./Data Cleaning Notebook.html">Click here for a Static Rendering of our Cleaning Jupyter Notebook</a></p>
+                                    <h3>Sum of Attributes per Desired Entity</h3>
+                                    <p>For a variety of actors, as stated above, we had to find the sum of other attributes, such as number of editors represented, number of journals, or countries associated with the actors. This required an initial reorganization
+                                        of the dataset by the primary actor then indicating which attributes to sum up. This process was memory intensive because of the size of the dataset and the lack of cores on our poor little laptops. </p>
+                                    <h3>Derivative Percentages of Predatory Associations</h3>
+                                    <p>For some derivative attributes, such as the percentage of predatory journals and the percentage of institutions associated with a particular journal, we had to take the original sum, provide a new scope, and divide
+                                        it by the total amount of attributes within the original scope. This, again, was a computationally heavy process because of the amount of iterations that the function had to do through the dataset.</p>
+                                    <p><a href="./Derivative Datasets – Concentrations -- Final.html">Click here for a Static Rendering of our Derivative Datasets Jupyter Notebook</a></p>
+
+                                    <h2> >> Final Designs and Implimentation
+                                        << </h2>
+                                            <p><a href="../../index.html ">Link to Project Page</a></p>
+                                            <h2>>> Examples of Answering the Intended Questions
+                                                <<</h2>
+                                                    <h3>Finding the Top Editors and Institutions</h3>
+                                                    <p>If someone was interested in finding the top editors and/or institutions for a particular country or for a set of countries, they would be able to click on the particular country on the map. This would
+                                                        result the country being highlighted the scope of the bargraphs to change. The bottom left graph would automatically change from showing the top countries to showing the top institutions for the
+                                                        selected country(s). Further, the bar graph on the left limit the top editors to the scope determined by the highlighted countries.</p>
+                                                    <h3>Determining the relationships between of countries</h3>
+                                                    <p>The relationship between countries can be determined by looking at the network graph, which shows how closely related countries are in terms of how many journals are represented by their editors. The
+                                                        ones that are closer together share more journals than the ones that are more distant. Further, one is able to see which countries are more central (degree centrality is the metric that is more easily
+                                                        visible) by looking at the number of edges connected to a node. In future iterations, users would be able to see the network graph with differ actors as the nodes (institutions/journals) and edges
+                                                        determined by different metrics (i.e., number of shared countries/editors/journals if journals/publisher are the nodes).
+                                                    </p>
+                                                    <h2>>> Design and Development Process
+                                                        <<</h2>
+                                                            <h3>Reflections</h3>
+                                                            <p>Working with data is difficult. There are always going to be challenges associated with cleaning data. This is an important thing to remember when doing any sort of data work. In the immortal
+                                                                words of Rolando, cleaning was “very gruesome”.
+                                                            </p>
+                                                            <p>Having a good product that is finished is more important than having a perfect product that isn’t. We shouldn’t let the good be the enemy of the perfect (to quote Rob Capra). This is an important
+                                                                lesson for Rolando and I because we both have perfectionist tendencies.
+                                                            </p>
+                                                            <p>The visualizations aren’t the answer but rather the tool(s) we use to find the answer. Thus, it’s important to keep in mind why we’re doing what we’re doing. Above all else, we need to remember
+                                                                the resulting visualization isn’t the end goal.
+                                                            </p>
+                                                            <p>Finally, we realized over the course of this project that we need to think about working smarter. There were many times we spent a lot of working trying to solve a problem only to realize there
+                                                                was a simpler solution for it. The best way to phrase it is “There’s probably definitely a library for that”.
+                                                            </p>
+                                                            <h2>>> Ethical and Societal Considerations
+                                                                <<</h2>
+                                                                    <h3>Reception</h3>
+                                                                    <p>It’s important to think about the way our work will be received and what the potential impact could be. This is important because our work here emphasized things we already suspected.
+                                                                        There is a clear bias in favor of the West in publishing and academica. Highlighting this gives us an opportunity to go ahead and think about how we can address it. </p>
+                                                                    <h3>Ethics</h3>
+                                                                    <p>In terms of ethics, we ran into the usual questions of ethics in data as we cleaned and transformed our data. We had to think about how to represent country names while reflecting the
+                                                                        continuing legacy of colonialism. Do we include the U.S. Virgin Islands under the United States? We also had to think about how to handle cases where there was a lack of clarity;
+                                                                        Korea for instance instead of North or South Korea. Finally, we had to think about how to handle cases when an editor had ties to two countries. Overall, dealing with countries was
+                                                                        a challenge in more ways than one. Beyond the issue of countries, we had editor names to deal with. There were a number of common names where we had to make decisions about how aggressively
+                                                                        to combine them. In the end, we had to think about representation issues and balance convenience vs. ethical commitment.
+                                                                    </p>
+</body>
+
+</html>

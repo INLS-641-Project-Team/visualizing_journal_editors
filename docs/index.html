@@ -34,7 +34,7 @@
 
             <ul id="navLinks">
                 <li><a href="#about">About</a></li>
-                <li>Findings</li>
+                <li><a href="assets/pages/report.html">Final Report</a></li>
                 <li><a href="#graphs">Graphs</a></li>
                 <li>Acknowledgements</li>
             </ul>
@@ -81,6 +81,7 @@
                     </select>
                 </h2>
                 <svg id="geoGraph"></svg>
+                <div id="selected_nodes">&nbsp;</div>
             </section>
             <section id="networkVis">
                 <h2 class="map_title">Nodes:
@@ -91,11 +92,11 @@
                 <svg id="networkGraph"></svg>
             </section>
             <section id="bar1-box">
-                <h2 class="map_title">Top 10 Countries by:
+                <h2 class="map_title">Top 10 <span id="filter_object">Countries</span> by:
                     <select id="bar1-filter-select" class="bar-select">
                     <option value="ed_count">Editor Count</option>
                     <option value="jrnl_count">Journal Count</option>
-                    <option value="pred_ed_perc">Editors for Predatory Journal (Percentage)</option>
+                    <option value="percent_pred">Editors for Predatory Journal (Percentage)</option>
                 </select></h2>
                 <svg id="bar1" class="barGraph"></svg>
             </section>

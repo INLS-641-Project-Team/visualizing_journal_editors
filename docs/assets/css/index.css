@@ -3,6 +3,21 @@
     font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+:default {
+    outline: none!important;
+    border: none!important;
+}
+
+:clicked {
+    outline: none!important;
+    border: none!important;
+}
+
+:focus {
+    outline: none!important;
+    border: none!important;
+}
+
 body {
     background-color: #FFFFFF;
 }
@@ -185,6 +200,7 @@ section#bar2-box {
 #geoGraph {
     width: 49vw;
     height: 450px;
+    max-height: 450px;
     margin: 0px auto;
     overflow: none;
     /* border: 1px solid gray; */
@@ -212,7 +228,7 @@ section#bar2-box {
 
 .barGraph {
     width: 49vw;
-    height: 298px;
+    height: 350px;
     overflow: none;
 }
 
@@ -249,23 +265,21 @@ section#bar2-box {
     pointer-events: all;
 }
 
-.countryClicked {
-    stroke: red;
-    stroke-width: 1.25px;
-    fill: red !important;
+.clicked {
+    stroke: red !important;
+    stroke-width: 1.25px !important;
 }
 
-.countryNotClicked {
-    stroke: rgb(33, 33, 33);
+.not-clicked {
+    stroke: rgb(33, 33, 33) !important;
     fill: rgb(120, 120, 120) !important;
 }
 
-*:checked,
-*:focus {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.country-btn {
+    background-color: #467aaa;
+    color: white;
+    margin: 0.5em;
+    padding: 0.5em;
+    border: none;
+    border-radius: 5%;
 }

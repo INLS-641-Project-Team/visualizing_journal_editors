@@ -198,6 +198,8 @@ class mapGraph {
 
     drawMap() {
 
+        let selected_countries = [];
+
         // DRAW CLIPPATH
         // Necessary for some of the projections
         this.svg.append('g')
@@ -264,15 +266,15 @@ class mapGraph {
         // draw countries
         this.svg.append("g")
             .selectAll("path")
+            .attr('id', 'countries')
             .data(this.scope == 'globe' ? this.globe_data.features : this.us_data.features, d => this.scope == 'globe' ? d.properties.geounit : d.properties.NAME)
             .join(
                 enter => enter
                 .append("path")
-                .attr("class", "country")
                 .attr("country", d => `${this.scope == 'globe'? d.properties.geounit: d.properties.NAME}`)
                 .attr('clip-path', 'url(#clippath)')
-                .attr("d", this.path)
-                .on('click', this.clicked),
+                .attr('class', 'country')
+                .attr("d", this.path),
                 update => update
                 .remove()
                 .append("path")
@@ -281,29 +283,53 @@ class mapGraph {
                 .attr('clip-path', 'url(#clippath)')
                 .attr("d", this.path),
                 exit => exit
-                .remove());
+                .remove())
+            .on('click', clicked);
+
+        function clicked(e, d) {
+            let sel = d3.select(e.target);
+            let countries = d3.select("#geoGraph");
+            let selected_list = d3.select('#selected_nodes');
+
+            if (sel.classed('clicked') == false) {
+                sel.classed('clicked', true).classed('not-clicked', false)
+                selected_list.append('button').classed('country-btn', true).attr('id', `${d.properties.geounit}-button`).text(d.properties.geounit)
+                selected_countries.push(d.properties.geounit == 'United States of America' ? 'United States' : d.properties.geounit)
+                countries.selectAll('.country:not(.clicked)').classed('not-clicked', true);
+                barVisL.updateScope(selected_countries);
+                netVis.highlightNodes(selected_countries, false);
+
+            } else {
+                if (countries.selectAll('.clicked').nodes().length == 0) {
+                    countries.selectAll('.not-clicked').classed('not-clicked', false)
+                    selected_list.selectAll('.country-btn').remove()
+                    barVisL.chart.selectAll("*").remove().transition().delay(100).duration(800);
+                    barVisL.create_aggs(barVisL.data, false).render();
+                    netVis.highlightNodes(selected_countries, true);
+                } else {
+                    sel.classed('clicked', false).classed('not-clicked', true);
+                    d3.select(`button#${d.properties.geounit}-button`).remove();
+                    let index = selected_countries.indexOf(d.properties.geounit == 'United States of America' ? 'United States' : d.properties.geounit)
+                    selected_countries.splice(index, 1)
+                    barVisL.updateScope(selected_countries)
+                    netVis.highlightNodes(selected_countries, false);
+
+                }
+            }
+
+            if (countries.selectAll('.clicked').nodes().length == 0) {
+                countries.selectAll('.not-clicked').classed('not-clicked', false)
+                selected_list.selectAll('.country-btn').remove()
+                barVisL.chart.selectAll("*").remove().transition().delay(100).duration(800);
+                barVisL.create_aggs(barVisL.data, false).render();
+            }
+
+        }
 
     }
 
     async loadData(data) {
         this.largeData = data;
-    }
-
-    clicked(e) {
-        console.log(e)
-        if (d3.select(this).classed('countryClicked') == true) {
-            d3.select(this).attr('clicked', false).classed('countryClicked', false)
-            d3.selectAll("#geoGraph g .country")
-                .classed("countryNotClicked", false)
-                .attr('class', 'country')
-                .style('fill', d => this.colorMap(d.properties.ed_count))
-        } else {
-            d3.selectAll("#geoGraph g .country").attr("class", "countryNotClicked")
-            d3.select(this).attr('clicked', true).classed('country', false).attr('class', 'countryClicked')
-            barVisL.updateGraph(d3.select(this).attr('country'))
-            e.stopPropagation();
-        }
-
 
 
     }

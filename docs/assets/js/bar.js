@@ -8,6 +8,7 @@ class barGraph {
         this.height = parseInt(window.getComputedStyle(this.graph.node()).height) // dimension of box
         this.xMargin = this.width * 0.05;
         this.yMargin = this.height * 0.1;
+        this.countriesScope = []
     }
 
     create_attrs(data, filter, subfilter) {
@@ -17,27 +18,32 @@ class barGraph {
         this.subfilter = subfilter;
         this.data = data;
         //console.log(`Filter:${filter} | Subfilter: ${subfilter}`)
-        this.create_aggs();
+        this.create_aggs(data, false);
         this.set_listener();
         return this
     }
 
-    create_aggs() {
-
-
-        this.topData = Object.entries(this.data[this.filter]).sort(([, a], [, b]) => b[this.subfilter] - a[this.subfilter]).slice(0, 10).map(d => [d[1][this.nodeFilter], d[1][this.subfilter]]);
+    create_aggs(data, update) {
+        if (update == false) {
+            this.topData = Object.entries(this.data[this.filter]).sort(([, a], [, b]) => b[this.subfilter] - a[this.subfilter]).slice(0, 10).map(d => [d[1][this.nodeFilter], d[1][this.subfilter]]);
+        } else {
+            this.topData = data;
+        }
         this.dataMin = d3.min(this.topData.map(x => x[1]))
         this.dataMax = d3.max(this.topData.map(x => x[1]))
         this.xScale = d3.scaleBand().domain(this.topData.map(d => d[0] == 'United States' ? 'U.S.A' : d[0] == 'United Kingdom' ? 'U.K.' : d[0])).range([0, this.width - 4 * this.xMargin]).padding(0.2);
         this.yScale = d3.scaleLinear().domain([0, this.dataMax + (this.dataMax * 0.1)]).range([this.height - 3 * this.yMargin, 0]);
         this.durationScale = d3.scaleLinear().domain([this.dataMin, this.dataMax]).range([200, 800]);
         this.chart = this.graph.append('g').attr("transform", `translate(${this.xMargin}, 0)`);
+
+
+        return this
+
     }
 
 
     render() {
 
-        this.chart.select('g').remove();
         // CREATE X AXIS
         this.chart
             .append('g')
@@ -69,10 +75,13 @@ class barGraph {
                 enter => enter
                 .append('rect')
                 .attr('x', d => this.xScale(d[0] == 'United States' ? 'U.S.A' : d[0] == 'United Kingdom' ? 'U.K.' : d[0]) + this.xMargin)
-                .attr('y', d => this.yScale(d[1]) + this.yMargin)
+                .attr('y', d => this.height - 2 * this.yMargin)
                 .attr('width', this.xScale.bandwidth())
+                .attr('height', d => 1)
+                .transition().delay(1000).duration(500)
                 .attr('height', d => this.height - this.yScale(d[1]) - 3 * this.yMargin)
-                .attr('fill', 'red')
+                .attr('y', d => this.yScale(d[1]) + this.yMargin)
+                .attr('fill', '#467aaa')
                 .attr("data-tippy-content", d => {
                     let count = d[1]
                     let html = `<span><b>${this.subfilter}:</b> ${Number.isFinite(count) == false? count : count.toLocaleString()}</span>`
@@ -80,15 +89,19 @@ class barGraph {
                 })
                 .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 })),
                 update => update
-                .transition().duration(500)
-                .attr('y', this.height - 2 * this.yMargin)
-                .attr('height', 2)
+                .transition().duration(1000)
+                .attr('y', d => this.height - 2 * this.yMargin)
+                .attr('height', 1)
                 .transition().duration(500).delay(500)
+                .attr('y', d => this.yScale(d[1]) + this.yMargin)
                 .attr('height', d => this.height - this.yScale(d[1]) - 3 * this.yMargin),
                 exit => exit
+                .transition().delay(100).duration(1000)
+                .attr('height', 1)
+                .attr('y', d => this.height - 2 * this.yMargin)
             )
 
-
+        return this
     }
 
     set_listener() {
@@ -96,14 +109,37 @@ class barGraph {
         let bar_select = d3.select('#' + this.id + "-filter-select");
         bar_select.on('change', event => {
             this.subfilter = event.target.value;
-            this.create_aggs();
+            this.chart.selectAll("*").remove().transition().delay(100).duration(800);
+            this.create_aggs(null, false);
             this.render();
         });
     }
 
+    updateScope(countries) {
+
+        let filtered_list = [...new Set(mapVis.largeData.map(x => {
+            if (countries.includes(Object.values(x)[5]) && Object.values(x)[5] != 'Unknown' && Object.values(x)[5] != undefined) {
+                return Object.values(x)[3]
+            }
+        }))]
+
+        let cont_list = Object.keys(this.data['institutions'])
+        let counts = Object.values(this.data['institutions']).map(x => x.ed_count)
+
+        let sorted_list = filtered_list.map(x => {
+            let index = cont_list.indexOf(x)
+            return [x, index > 0 ? counts[index] : 0]
+        })
+
+        sorted_list = sorted_list.sort(([, a], [, b]) => b - a).splice(0, 10)
+        d3.select('#filter_object').text('Institutions');
+        this.chart.selectAll("*").remove().transition().delay(100).duration(800);
+        this.create_aggs(sorted_list, true);
+        this.render();
+
+    }
 
     updateGraph(filter) {
-
         filter = filter == 'United States of America' ? filter = 'United States' : filter
         let filtered_list = mapVis.largeData
             .filter(x => Object.values(x)[5] == filter)
@@ -112,9 +148,7 @@ class barGraph {
                 if (jList[journal] == true) { jList[journal]++ } else { jList[journal] = 1 }
                 return jList
             }, {})
-        console.log(filtered_list)
-        console.log(filter)
-            //console.log(mapVis.largeData)
-        console.log(this.data)
+
+        //console.log(mapVis.largeData)
     }
 }

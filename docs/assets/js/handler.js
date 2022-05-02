@@ -11,19 +11,25 @@ class handler {
             mapVis.initializeMap(r[0], r[1], d3.geoRobinson, 'globe');
         })
 
-        d3.json("assets/data/concentrations.json").then(r => {
-            console.log('sending concentrations to maps.')
-            mapVis.setCounts(r);
+        d3.json("assets/data/concentrations_with_pred.json").then(r => {
+            let concs = r
+            setTimeout(
+                () => {
+                    d3.csv("assets/data/cleaned_csv2.csv").then(r => {
+                        mapVis.loadData(r);
+                        mapVis.setCounts(concs);
+                    })
+                },
+                "1"
+            );
             barVisL.create_attrs(r, 'countries', 'ed_count').render();
             barVisR.create_attrs(r, 'editors', 'journal_count').render();
+
+
         });
 
-        d3.json('assets/data/country_network.json').then(r => {
-            netVis.initialRender(r)
-        })
-
-        d3.csv("assets/data/cleaned_csv2.csv").then(r => {
-            mapVis.loadData(r);
+        d3.json('assets/data/network_data.json').then(r => {
+            netVis.initialRender(r, 'countries')
         })
 
 
