@@ -8,27 +8,33 @@ class barGraph {
         this.height = parseInt(window.getComputedStyle(this.graph.node()).height) // dimension of box
         this.xMargin = this.width * 0.05;
         this.yMargin = this.height * 0.1;
-        this.countriesScope = []
+        this.countriesScope = [];
+        this.country_data = false;
+        this.ed_data = false;
+        this.pub_data = false;
+        this.inst_data = false;
+        this.sub_data = false;
     }
 
-    create_attrs(data, filter, subfilter) {
-        let v_name = filter == 'countries' ? 'country' : 'editor'
+    create_attrs(country_data, filter, subfilter) {
         this.filter = filter;
-        this.nodeFilter = v_name;
         this.subfilter = subfilter;
-        this.data = data;
-        //console.log(`Filter:${filter} | Subfilter: ${subfilter}`)
-        this.create_aggs(data, false);
+        this.country_data = country_data;
+        this.create_aggs(country_data, false);
         this.set_listener();
         return this
     }
 
     create_aggs(data, update) {
+
+        let chosen_data = this.filter == 'country' ? this.country_data : this.filter == 'editor' ? this.ed_data : this.pub_data;
+
         if (update == false) {
-            this.topData = Object.entries(this.data[this.filter]).sort(([, a], [, b]) => b[this.subfilter] - a[this.subfilter]).slice(0, 10).map(d => [d[1][this.nodeFilter], d[1][this.subfilter]]);
+            this.topData = Object.entries(chosen_data).filter(x => x[0] != null).sort(([, a], [, b]) => b[this.subfilter] - a[this.subfilter]).slice(0, 10).map(d => [d[1][this.filter], d[1][this.subfilter]]);
         } else {
             this.topData = data;
         }
+
         this.dataMin = d3.min(this.topData.map(x => x[1]))
         this.dataMax = d3.max(this.topData.map(x => x[1]))
         this.xScale = d3.scaleBand().domain(this.topData.map(d => d[0] == 'United States' ? 'U.S.A' : d[0] == 'United Kingdom' ? 'U.K.' : d[0])).range([0, this.width - 4 * this.xMargin]).padding(0.2);
@@ -115,16 +121,19 @@ class barGraph {
         });
     }
 
-    updateScope(countries) {
+    updateScope(countries, filter) {
+
+        let j = filter == 'institution' ? 3 : 'editor' ? 1 : 7;
+        let data = filter == 'institution' ? this.inst_data : 'editor' ? this.ed_data : this.pub_data;
 
         let filtered_list = [...new Set(mapVis.largeData.map(x => {
-            if (countries.includes(Object.values(x)[5]) && Object.values(x)[5] != 'Unknown' && Object.values(x)[5] != undefined) {
-                return Object.values(x)[3]
+            if (countries.includes(Object.values(x)[5]) && Object.values(x)[j] != 'Unknown' && Object.values(x)[j] != undefined) {
+                return Object.values(x)[j]
             }
         }))]
 
-        let cont_list = Object.keys(this.data['institutions'])
-        let counts = Object.values(this.data['institutions']).map(x => x.ed_count)
+        let cont_list = Object.keys(data)
+        let counts = Object.values(data).map(x => filter == 'institution' ? x.ed_count : filter == "editor" ? x.jrnl_count : x.journal)
 
         let sorted_list = filtered_list.map(x => {
             let index = cont_list.indexOf(x)
@@ -138,6 +147,7 @@ class barGraph {
         this.render();
 
     }
+
 
     updateGraph(filter) {
         filter = filter == 'United States of America' ? filter = 'United States' : filter

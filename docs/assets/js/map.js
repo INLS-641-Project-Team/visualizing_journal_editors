@@ -115,8 +115,7 @@ class mapGraph {
     setCounts(data, filter = 'countries', subfilter = 'ed_count') {
         console.log('concentrations loaded')
         this.concentrations = data;
-        let filtered_conc = data[filter]
-        let countries_info = Object.values(filtered_conc)
+        let countries_info = Object.values(this.concentrations)
         let c_values = countries_info.map(x => x[subfilter])
         this.colorMap = d3.scaleLinear().domain([0, d3.max(c_values)]).range(['#fee0d2', "#de2d26"]);
 
@@ -296,33 +295,40 @@ class mapGraph {
                 selected_list.append('button').classed('country-btn', true).attr('id', `${d.properties.geounit}-button`).text(d.properties.geounit)
                 selected_countries.push(d.properties.geounit == 'United States of America' ? 'United States' : d.properties.geounit)
                 countries.selectAll('.country:not(.clicked)').classed('not-clicked', true);
-                barVisL.updateScope(selected_countries);
+
+
+                barVisL.updateScope(selected_countries, 'institution');
+                barVisR.updateScope(selected_countries, 'editor');
+
+
                 netVis.highlightNodes(selected_countries, false);
 
             } else {
                 if (countries.selectAll('.clicked').nodes().length == 0) {
                     countries.selectAll('.not-clicked').classed('not-clicked', false)
                     selected_list.selectAll('.country-btn').remove()
+
                     barVisL.chart.selectAll("*").remove().transition().delay(100).duration(800);
-                    barVisL.create_aggs(barVisL.data, false).render();
+                    barVisL.create_aggs(barVisL.country_data, false).render();
+
+                    barVisR.chart.selectAll("*").remove().transition().delay(100).duration(800);
+                    barVisR.create_aggs(barVisR.ed_data, false).render();
+
+
+
                     netVis.highlightNodes(selected_countries, true);
                 } else {
                     sel.classed('clicked', false).classed('not-clicked', true);
                     d3.select(`button#${d.properties.geounit}-button`).remove();
                     let index = selected_countries.indexOf(d.properties.geounit == 'United States of America' ? 'United States' : d.properties.geounit)
                     selected_countries.splice(index, 1)
-                    barVisL.updateScope(selected_countries)
+                    barVisL.updateScope(selected_countries, 'institution');
+                    barVisR.updateScope(selected_countries, 'editor');
                     netVis.highlightNodes(selected_countries, false);
 
                 }
             }
 
-            if (countries.selectAll('.clicked').nodes().length == 0) {
-                countries.selectAll('.not-clicked').classed('not-clicked', false)
-                selected_list.selectAll('.country-btn').remove()
-                barVisL.chart.selectAll("*").remove().transition().delay(100).duration(800);
-                barVisL.create_aggs(barVisL.data, false).render();
-            }
 
         }
 

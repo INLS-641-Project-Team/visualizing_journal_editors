@@ -11,7 +11,7 @@ class handler {
             mapVis.initializeMap(r[0], r[1], d3.geoRobinson, 'globe');
         })
 
-        d3.json("assets/data/concentrations_with_pred.json").then(r => {
+        d3.json("assets/data/country_concentrations.json").then(r => {
             let concs = r
             setTimeout(
                 () => {
@@ -22,10 +22,20 @@ class handler {
                 },
                 "1"
             );
-            barVisL.create_attrs(r, 'countries', 'ed_count').render();
-            barVisR.create_attrs(r, 'editors', 'journal_count').render();
-
-
+            d3.json('assets/data/ed_concentrations.json').then(r2 => {
+                barVisL.ed_data = r2;
+                barVisR.ed_data = r2;
+                barVisL.create_attrs(r, 'country', 'ed_count').render();
+                barVisR.create_attrs(r, 'editor', 'journal_count').render();
+            })
+            d3.json('assets/data/institution_concentrations.json').then(r => {
+                barVisL.inst_data = r;
+                barVisR.inst_data = r;
+                d3.json('assets/data/subcountry_concentrations.json').then(r => {
+                    barVisL.inst_data = r;
+                    barVisR.inst_data = r;
+                })
+            })
         });
 
         d3.json('assets/data/network_data.json').then(r => {

@@ -22,6 +22,7 @@ class networkGraph {
             height = this.height,
             weights = Object.values(filtered_data['edges']).map(d => d.weight);
         let linkScale = d3.scaleLinear().domain([ss.min(weights), ss.max(weights)]).range([0.1, 15]);
+        this.linkScale = linkScale;
         let linkStrengthScale = d3.scaleLinear().domain([ss.min(weights), ss.max(weights)]).range([1000, 100]);
         let link, node;
         let nodes = Object.values(filtered_data['nodes']).map(x => Object.values(x)[0])
@@ -108,15 +109,14 @@ class networkGraph {
 
     highlightNodes(countries, reset) {
         //reset nodes and links
-        this.svg.selectAll('.node').style('fill', '#467aaa').style('stroke', none);
-        this.svg.selectAll('.link').style('stroke', '#aaa').style('stroke-width', d => linkScale(d.weight)).attr('opacity', 1);
-
+        this.svg.selectAll('.node').style('fill', '#467aaa');
+        this.svg.selectAll('.link').style('stroke', '#aaa').style('stroke-width', d => this.linkScale(d.weight)).attr('opacity', 1);
+        console.log(countries)
         if (reset == false) {
             // change nodes based on selection 
             countries.forEach(country => {
-                this.svg.select(`#${country}-node`).style('fill', 'red').style('stroke', 'orange');
+                this.svg.select(`circle#${country}-node`).style('fill', 'red');
                 this.svg.selectAll('.link').filter(d => {
-                    console.log(d.source.id);
                     return d.source.id == country
                 }).style('stroke', 'blue').style('stroke-width', 8);
                 this.svg.selectAll('.link').filter(d => d.id != country).attr('opacity', 0.3);
