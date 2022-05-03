@@ -3,18 +3,21 @@ class handler {
     constructor() {}
 
     async loadData() {
-
+        console.log('test 1')
         Promise.all([
             d3.json("assets/data/world_geo.json"),
             d3.json("assets/data/us-states.json")
         ]).then(r => {
+            console.log('test 2')
             mapVis.initializeMap(r[0], r[1], d3.geoRobinson, 'globe');
         })
-
+        console.log('test 3')
         d3.json("assets/data/country_concentrations.json").then(r => {
             let concs = r
             setTimeout(
                 () => {
+                    console.log('test 4')
+
                     d3.csv("assets/data/cleaned_csv2.csv").then(r => {
                         mapVis.loadData(r);
                         mapVis.setCounts(concs);
