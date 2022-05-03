@@ -12,38 +12,36 @@ class handler {
             mapVis.initializeMap(r[0], r[1], d3.geoRobinson, 'globe');
         })
         console.log('test 3')
-            // d3.json("assets/data/country_concentrations.json").then(r => {
-            //     let concs = r
-            //     setTimeout(
-            //         () => {
-            //             console.log('test 4')
+        d3.json("assets/data/country_concentrations.json").then(r => {
+            let concs = r
+            setTimeout(
+                () => {
+                    d3.csv("assets/data/compressed_df.csv").then(r => {
+                        mapVis.largeData = r;
+                        mapVis.setCounts(concs);
+                    })
+                },
+                "1"
+            );
+            d3.json('assets/data/ed_concentrations.json').then(r2 => {
+                barVisL.ed_data = r2;
+                barVisR.ed_data = r2;
+                barVisL.create_attrs(r, 'country', 'ed_count').render();
+                barVisR.create_attrs(r, 'editor', 'journal_count').render();
+            })
+            d3.json('assets/data/institution_concentrations.json').then(r => {
+                barVisL.inst_data = r;
+                barVisR.inst_data = r;
+                d3.json('assets/data/subcountry_concentrations.json').then(r => {
+                    barVisL.inst_data = r;
+                    barVisR.inst_data = r;
+                })
+            })
+        });
 
-        //             d3.csv("assets/data/cleaned_csv2.csv").then(r => {
-        //                 mapVis.loadData(r);
-        //                 mapVis.setCounts(concs);
-        //             })
-        //         },
-        //         "1"
-        //     );
-        //     d3.json('assets/data/ed_concentrations.json').then(r2 => {
-        //         barVisL.ed_data = r2;
-        //         barVisR.ed_data = r2;
-        //         barVisL.create_attrs(r, 'country', 'ed_count').render();
-        //         barVisR.create_attrs(r, 'editor', 'journal_count').render();
-        //     })
-        //     d3.json('assets/data/institution_concentrations.json').then(r => {
-        //         barVisL.inst_data = r;
-        //         barVisR.inst_data = r;
-        //         d3.json('assets/data/subcountry_concentrations.json').then(r => {
-        //             barVisL.inst_data = r;
-        //             barVisR.inst_data = r;
-        //         })
-        //     })
-        // });
-
-        // d3.json('assets/data/network_data.json').then(r => {
-        //     netVis.initialRender(r, 'countries')
-        // })
+        d3.json('assets/data/network_data.json').then(r => {
+            netVis.initialRender(r, 'countries')
+        })
 
 
     }

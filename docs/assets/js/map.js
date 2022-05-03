@@ -4,6 +4,7 @@ class mapGraph {
     constructor() {
         this.globe_data = false;
         this.us_data = false;
+        this.largeData = false;
         this.svg = d3.select("#geoGraph")
         this.width = parseInt(window.getComputedStyle(this.svg.node()).width) // dimension of SVG
         this.height = parseInt(window.getComputedStyle(this.svg.node()).height); // dimension of SVG
@@ -333,12 +334,5 @@ class mapGraph {
         }
 
     }
-
-    async loadData(data) {
-        this.largeData = data;
-
-
-    }
-
 
 }

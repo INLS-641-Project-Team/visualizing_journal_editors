@@ -125,80 +125,81 @@ class networkGraph {
 
     }
 
-    async render(data, filter = 'country') {
+    /* OLD CODE */
+    // async render(data, filter = 'country') {
 
-        this.country_data = data;
-        this.publisher_data = d3.json('assets/data/publisher_network.json', d => d);
-        this.journal_data = d3.json('assets/data/journal_network.json', d => d);
+    //     this.country_data = data;
+    //     this.publisher_data = d3.json('assets/data/publisher_network.json', d => d);
+    //     this.journal_data = d3.json('assets/data/journal_network.json', d => d);
 
-        let filtered_data = filter == 'country' ? this.country_data : 'publisher' ? this.publisher_data : this.journal_data;
+    //     let filtered_data = filter == 'country' ? this.country_data : 'publisher' ? this.publisher_data : this.journal_data;
 
-        console.log(filtered_data)
-            // links
-        let link = this.network.selectAll(".link")
-            .data(filtered_data['edges'], d => d)
-            .join(
-                enter => enter
-                .append('line')
-                .attr('class', 'link')
-                .transition().delay(2000)
-                .style('stroke', '#aaa')
-                .style("stroke-width", 1),
-                update => update
-                .attr('x1', d => d.source.x)
-                .attr('y1', d => d.source.y)
-                .attr('x2', d => d.target.x)
-                .attr('y2', d => d.target.y),
-                exit => exit
-            );
+    //     console.log(filtered_data)
+    //         // links
+    //     let link = this.network.selectAll(".link")
+    //         .data(filtered_data['edges'], d => d)
+    //         .join(
+    //             enter => enter
+    //             .append('line')
+    //             .attr('class', 'link')
+    //             .transition().delay(2000)
+    //             .style('stroke', '#aaa')
+    //             .style("stroke-width", 1),
+    //             update => update
+    //             .attr('x1', d => d.source.x)
+    //             .attr('y1', d => d.source.y)
+    //             .attr('x2', d => d.target.x)
+    //             .attr('y2', d => d.target.y),
+    //             exit => exit
+    //         );
 
-        // nodes
-        let nodes = this.network.selectAll(".node")
-            .data(filtered_data['nodes'], d => d.id)
-            .join(
-                enter => enter
-                .append('circle')
-                .attr('class', 'node')
-                .style('fill', '#647aaa')
-                .style("z-index", 999)
-                .attr('r', 0)
-                .attr("data-tippy-content", d => {
-                    let html = `<span><b>Country:</b> ${d.country}</span><br><span><b>Editor Count:</b> TEST</span>`
-                    return html
-                })
-                .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 }))
-                .transition().duration(10).delay((d, i) => 10 + 12 * i)
-                .attr('r', 10),
-                update => update
-                .attr('cx', d => d.x)
-                .attr('cy', d => d.y),
-                exit => exit
-            );
+    //     // nodes
+    //     let nodes = this.network.selectAll(".node")
+    //         .data(filtered_data['nodes'], d => d.id)
+    //         .join(
+    //             enter => enter
+    //             .append('circle')
+    //             .attr('class', 'node')
+    //             .style('fill', '#647aaa')
+    //             .style("z-index", 999)
+    //             .attr('r', 0)
+    //             .attr("data-tippy-content", d => {
+    //                 let html = `<span><b>Country:</b> ${d.country}</span><br><span><b>Editor Count:</b> TEST</span>`
+    //                 return html
+    //             })
+    //             .call(selection => tippy(selection.nodes(), { allowHTML: true, followCursor: 'initial', delay: 150 }))
+    //             .transition().duration(10).delay((d, i) => 10 + 12 * i)
+    //             .attr('r', 10),
+    //             update => update
+    //             .attr('cx', d => d.x)
+    //             .attr('cy', d => d.y),
+    //             exit => exit
+    //         );
 
-        // force
-        let simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(filtered_data['edges'])
-                .id(d => d.id)
-                .links(filtered_data['edges'])
-            )
-            .force("charge", d3.forceManyBody().strength(-200).distanceMin(10).distanceMax(150))
-            .force("center", d3.forceCenter(this.width / 2, this.height / 2))
-            .on('end', ticked);
+    //     // force
+    //     let simulation = d3.forceSimulation(nodes)
+    //         .force("link", d3.forceLink(filtered_data['edges'])
+    //             .id(d => d.id)
+    //             .links(filtered_data['edges'])
+    //         )
+    //         .force("charge", d3.forceManyBody().strength(-200).distanceMin(10).distanceMax(150))
+    //         .force("center", d3.forceCenter(this.width / 2, this.height / 2))
+    //         .on('end', ticked);
 
-        // updating network
-        function ticked() {
+    //     // updating network
+    //     function ticked() {
 
-            link
-                .attr('x1', d => d.source.x)
-                .attr('y1', d => d.source.y)
-                .attr('x2', d => d.target.x)
-                .attr('y2', d => d.target.y)
+    //         link
+    //             .attr('x1', d => d.source.x)
+    //             .attr('y1', d => d.source.y)
+    //             .attr('x2', d => d.target.x)
+    //             .attr('y2', d => d.target.y)
 
-            node
-                .attr('cx', d => d.x)
-                .attr('cy', d => d.y)
-        }
+    //         node
+    //             .attr('cx', d => d.x)
+    //             .attr('cy', d => d.y)
+    //     }
 
 
-    }
+    // }
 }
